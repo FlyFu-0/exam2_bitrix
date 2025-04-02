@@ -23,20 +23,27 @@ class IblockEventHandler
 
         $arFields['PREVIEW_TEXT'] = str_replace('#del#', '', $arFields['PREVIEW_TEXT']);
 
-        $reviewIblock = \Bitrix\Iblock\Iblock::wakeUp(REVIEWS_IBLOCK_ID)->getEntityDataClass();
+//        $reviewIblock = \Bitrix\Iblock\Iblock::wakeUp(REVIEWS_IBLOCK_ID)->getEntityDataClass();
+//
+//        $reviewAuthorId = $reviewIblock::query()
+//            ->setSelect(['AUTHOR_ID' => 'AUTHOR.VALUE'])
+//            ->setFilter([
+//                'ACTIVE' => 'Y',
+//                'ID' => $arFields['ID']
+//            ])
+//            ->fetch();
 
-        $reviewAuthorId = $reviewIblock::query()
-            ->setSelect(['AUTHOR_ID' => 'AUTHOR.VALUE'])
-            ->setFilter([
-                'ACTIVE' => 'Y',
-                'ID' => $arFields['ID']
-            ])
-            ->fetch();
+        $obReviewAuthorId = CIBlockElement::GetList(arFilter: ['ACTIVE' => 'Y', 'ID' => $arFields['ID']], arSelectFields: ['PROPERTY_AUTHOR']);
+        if (!$obReviewAuthorId) {
+            return;
+        }
+        $reviewAuthorId = $obReviewAuthorId->GetNext();
 
         if (!$reviewAuthorId) {
             return;
         }
-        self::$oldAuthor = $reviewAuthorId['AUTHOR_ID'];
+//        self::$oldAuthor = $reviewAuthorId['AUTHOR_ID'];
+        self::$oldAuthor = $reviewAuthorId['PROPERTY_AUTHOR_VALUE'];
     }
 
     public static function onAfterIBlockElementUpdate(&$arFields)
