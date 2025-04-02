@@ -6,13 +6,19 @@ class UserEventHandler
 
     public static function onBeforeUserUpdate(&$arFields)
     {
-        $user = \Bitrix\Main\UserTable::query()
-            ->setSelect([USER_CLASS_FIELD])
-            ->setFilter([
-                'ACTIVE' => 'Y',
-                'ID' => $arFields['ID']
-            ])
-            ->fetch();
+//        $user = \Bitrix\Main\UserTable::query()
+//            ->setSelect([USER_CLASS_FIELD])
+//            ->setFilter([
+//                'ACTIVE' => 'Y',
+//                'ID' => $arFields['ID']
+//            ])
+//            ->fetch();
+
+        $obUser = CUser::GetByID($arFields['ID']);
+        if (!$obUser) {
+            return;
+        }
+        $user = $obUser->GetNext();
 
         self::$authorClass = [
             'ID' => 0,
@@ -21,11 +27,7 @@ class UserEventHandler
             ),
         ];
 
-        if (!$user) {
-            return;
-        }
-
-        if (!current($user)) {
+        if (!$user || !current($user)) {
             return;
         }
 
