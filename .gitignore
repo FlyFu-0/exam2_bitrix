@@ -1,0 +1,15 @@
+/bitrix/
+/company/
+/contacts/
+/include/
+/login/
+/news/
+/products/
+/search/
+/services/
+/upload/
+/.*
+/*.php
+/*.ico
+!.gitignore
+
